@@ -35,6 +35,8 @@ const CAPABILITY_ROLES = {
   listUsers: GENERAL_USE,
   findUsers: GENERAL_USE,
   deactivateUser: [ADMIN],
+  
+  viewPhases: GENERAL_USE,
 
   saveResponse: GENERAL_USE,
   getRetrospectiveSurvey: GENERAL_USE,
