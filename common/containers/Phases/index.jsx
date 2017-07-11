@@ -15,8 +15,9 @@ import styles from './index.scss'
 class PhaseListContainer extends Component {
   constructor(props) {
     super(props)
+    this.state = {selectedPhaseIndex: 0}
     this.handleClickImport = this.handleClickImport.bind(this)
-    this.handleSelectRow = this.handleSelectRow.bind(this)
+    this.handleSelectPhase = this.handleSelectPhase.bind(this)
   }
 
   componentDidMount() {
@@ -34,8 +35,10 @@ class PhaseListContainer extends Component {
     this.props.navigate('/projects/new')
   }
 
-  handleSelectRow(row) {
-    this.props.navigate(`/projects/${this.props.projects[row].name}`)
+  handleSelectPhase(phaseIndex) {
+    let currentState = this.state
+    currentState.selectedPhaseIndex = phaseIndex
+    this.setState(currentState)
   }
 
   render() {
@@ -43,36 +46,37 @@ class PhaseListContainer extends Component {
       {
         label: 'Phase 1',
         number: 1,
-        currentProjects: []
+        currentProjects: ['phase 1 projects','another one']
       },
       {
         label: 'Phase 2',
         number: 2,
-        currentProjects: []
+        currentProjects: ['phase 2 projects','another one']
       },
       {
         label: 'Phase 3',
         number: 3,
-        currentProjects: []
+        currentProjects: ['phase 3 projects','another one']
       },
       {
         label: 'Phase 4',
         number: 4,
-        currentProjects: []
+        currentProjects: ['phase 4 projects','another one']
       },
       {
         label: 'Phase 5',
         number: 5,
-        currentProjects: []
+        currentProjects: ['phase 5 projects','another one']
       }
     ]
 
     const {isBusy, currentUser, projects} = this.props
     return isBusy ? null : (
       <PhaseList
+        selectedPhaseIndex={this.state.selectedPhaseIndex}
         phases={phases}
         projects={projects}
-        onSelectRow={this.handleSelectRow}
+        handleSelectPhase={this.handleSelectPhase}
         onClickImport={this.handleClickImport}
         onLoadMoreClicked={this.props.handleLoadMore}
         />

@@ -10,7 +10,7 @@ import {Flex} from 'src/common/components/Layout'
 
 import styles from './index.scss'
 
-const PhaseModel = {
+const ProjectModel = {
   name: {type: String},
   cycleNumber: {title: 'Cycle', type: String},
   phaseNumber: {title: 'Phase', type: String},
@@ -23,7 +23,9 @@ const PhaseModel = {
 export default class PhaseList extends Component {
   render() {
     const {projects, allowSelect, allowImport, onClickImport, onSelectRow} = this.props
-    const projectData = projects.map(project => {
+    const projectDataByPhase = projects.filter( project => {
+      return project.phaseNumber === this.props.phases[this.props.selectedPhaseIndex].number
+    }).map(project => {
       const memberHandles = (project.members || []).map(member => member.handle).join(', ')
       const cycle = project.cycle || {}
       const phase = project.phase || {}
@@ -46,11 +48,21 @@ export default class PhaseList extends Component {
         onClickButton={allowImport ? onClickImport : null}
         />
     )
+
+    const projectsTable = (
+      <ContentTable
+        model={ProjectModel}
+        source={projectDataByPhase}
+        allowSelect={allowSelect}
+        onSelectRow={allowSelect ? onSelectRow : null}
+        />
+    )
+
     const tabs = this.props.phases.map( phase => {
-      return <Tab label={phase.label}><small>First Content</small></Tab>
+      return <Tab label={phase.label}><small>{projectsTable}</small></Tab>
     })
     const content = (
-      <Tabs index={this.state.fixedIndex} onChange={this.handleFixedTabChange} fixed>
+      <Tabs index={this.props.selectedPhaseIndex} onChange={this.props.handleSelectPhase} fixed>
         {tabs}
       </Tabs>
     )
@@ -68,7 +80,7 @@ export default class PhaseList extends Component {
 }
 
 PhaseList.propTypes = {
-  phases: PropTypes.arrayOf(PropTypes.shape({
+  // phases: PropTypes.arrayOf(PropTypes.shape({
     projects: PropTypes.arrayOf(PropTypes.shape({
       name: PropTypes.string.isRequired,
       goal: PropTypes.shape({
@@ -86,7 +98,7 @@ PhaseList.propTypes = {
       })),
       createdAt: PropTypes.date,
     })),
-  })),
+  // })),
   allowSelect: PropTypes.bool,
   allowImport: PropTypes.bool,
   onSelectRow: PropTypes.func,
