@@ -7,7 +7,7 @@ import PhaseList from 'src/common/components/Phases'
 import {showLoad, hideLoad} from 'src/common/actions/app'
 import {findProjects} from 'src/common/actions/project'
 import {findUsers} from 'src/common/actions/user'
-import {findPhases} from 'src/common/actions/phase'
+import {findPhasesWithProjects} from 'src/common/actions/phase'
 import {userCan} from 'src/common/util'
 
 import styles from './index.scss'
@@ -26,6 +26,7 @@ class PhaseListContainer extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps)
     if (!nextProps.isBusy && nextProps.loading) {
       this.props.hideLoad()
     }
@@ -85,6 +86,7 @@ class PhaseListContainer extends Component {
 }
 
 PhaseListContainer.propTypes = {
+  phaseProjects: PropTypes.array.isRequired,
   projects: PropTypes.array.isRequired,
   oldestCycleLoadedId: PropTypes.string,
   isBusy: PropTypes.bool.isRequired,
@@ -101,12 +103,13 @@ PhaseListContainer.fetchData = fetchData
 
 function fetchData(dispatch) {
   dispatch(findUsers())
-  dispatch(findPhases())
+  dispatch(findPhasesWithProjects())
   dispatch(findProjects())
 }
 
 function mapStateToProps(state) {
-  const {app, auth, projects, users, phases} = state
+  console.log('state',state)
+  const {app, auth, projects, users, phases, phaseProjects} = state
   const {projects: projectsById} = projects
   const {users: usersById} = users
   const {phases: phasesById} = phases
@@ -135,10 +138,12 @@ function mapStateToProps(state) {
     currentUser: auth.currentUser,
     oldestCycleLoadedId,
     projects: projectList,
+    phaseProjects: phaseProjects,
   }
 }
 
 function mapDispatchToProps(dispatch) {
+  console.log('dispatch',dispatch)
   return {
     navigate: path => dispatch(push(path)),
     showLoad: () => dispatch(showLoad()),

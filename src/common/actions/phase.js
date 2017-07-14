@@ -22,3 +22,25 @@ export function findPhases() {
     payload: {},
   }
 }
+
+export function findPhasesWithProjects() {
+  return {
+    types: [
+      types.FIND_PHASES_REQUEST,
+      types.FIND_PHASES_SUCCESS,
+      types.FIND_PHASES_FAILURE,
+    ],
+    shouldCallAPI: () => true,
+    callAPI: (dispatch, getState) => {
+      const query = queries.findPhasesWithProjects()
+      return getGraphQLFetcher(dispatch, getState().auth)(query)
+        .then(graphQLResponse => graphQLResponse.data.findPhases)
+        .then(phases => normalize(phases, schemas.phaseProjects))
+        .then(result => {
+          console.log(' normalizer result ',result)
+          return result
+        })
+    },
+    payload: {},
+  }
+}
