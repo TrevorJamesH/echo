@@ -22,7 +22,7 @@ const ProjectModel = {
 
 export default class PhaseList extends Component {
   render() {
-    const {projects, allowSelect, allowImport, onClickImport, onSelectRow} = this.props
+    const {phases, allowSelect, allowImport, onClickImport, onSelectRow} = this.props
     const projectDataByPhase = projects.filter( project => {
       return project.phaseNumber === this.props.phases[this.props.selectedPhaseIndex].number
     }).map(project => {
@@ -61,11 +61,13 @@ export default class PhaseList extends Component {
     const tabs = this.props.phases.map( phase => {
       return <Tab label={phase.label}><small>{projectsTable}</small></Tab>
     })
+
     const content = (
       <Tabs index={this.props.selectedPhaseIndex} onChange={this.props.handleSelectPhase} fixed>
         {tabs}
       </Tabs>
     )
+
     return (
       <Flex column>
         <Helmet>
@@ -73,15 +75,14 @@ export default class PhaseList extends Component {
         </Helmet>
         {header}
         {content}
-        <Button onClick={this.props.onLoadMoreClicked} label="Load More..." icon="keyboard_arrow_down" accent/>
       </Flex>
     )
   }
 }
 
 PhaseList.propTypes = {
-  // phases: PropTypes.arrayOf(PropTypes.shape({
-    projects: PropTypes.arrayOf(PropTypes.shape({
+  phases: PropTypes.arrayOf(PropTypes.shape({
+    currentProjects: PropTypes.arrayOf(PropTypes.shape({
       name: PropTypes.string.isRequired,
       goal: PropTypes.shape({
         title: PropTypes.string,
@@ -98,7 +99,7 @@ PhaseList.propTypes = {
       })),
       createdAt: PropTypes.date,
     })),
-  // })),
+  })),
   allowSelect: PropTypes.bool,
   allowImport: PropTypes.bool,
   onSelectRow: PropTypes.func,
