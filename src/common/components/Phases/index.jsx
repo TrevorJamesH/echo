@@ -22,13 +22,14 @@ const ProjectModel = {
 
 export default class PhaseList extends Component {
   render() {
-    const {phases, allowSelect, allowImport, onClickImport, onSelectRow} = this.props
-    const projectDataByPhase = projects.filter( project => {
-      return project.phaseNumber === this.props.phases[this.props.selectedPhaseIndex].number
-    }).map(project => {
+    const {phases, allowSelect, allowImport, onClickImport, onSelectRow, selectedPhaseIndex} = this.props
+    phases.sort( (a,b) => a.number - b.number )
+    const phase = phases[selectedPhaseIndex]
+    const projects = phase.currentProjects
+
+    const projectList = projects.map( project => {
       const memberHandles = (project.members || []).map(member => member.handle).join(', ')
       const cycle = project.cycle || {}
-      const phase = project.phase || {}
       return {
         memberHandles,
         name: project.name,
@@ -52,14 +53,14 @@ export default class PhaseList extends Component {
     const projectsTable = (
       <ContentTable
         model={ProjectModel}
-        source={projectDataByPhase}
+        source={projectList}
         allowSelect={allowSelect}
         onSelectRow={allowSelect ? onSelectRow : null}
         />
     )
 
-    const tabs = this.props.phases.map( phase => {
-      return <Tab label={phase.label}><small>{projectsTable}</small></Tab>
+    const tabs = phases.map( phase => {
+      return <Tab label={'Phase  '+phase.number} key={phase.number}><small>{projectsTable}</small></Tab>
     })
 
     const content = (
