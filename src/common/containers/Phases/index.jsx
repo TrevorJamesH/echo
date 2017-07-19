@@ -5,10 +5,15 @@ import {Link} from 'react-router'
 
 import TabbedContentTable from 'src/common/components/TabbedContentTable'
 import {showLoad, hideLoad} from 'src/common/actions/app'
-import {findProjects} from 'src/common/actions/project'
 import {findUsers} from 'src/common/actions/user'
 import {findPhasesWithProjects} from 'src/common/actions/phase'
-import {userCan} from 'src/common/util'
+
+const ProjectModel = {
+  project: {type: String},
+  goalTitle: {title: 'Goal', type: String},
+  hasArtifact: {title: 'Artifact?', type: String},
+  memberHandles: {title: 'Members', type: String},
+}
 
 class PhaseListContainer extends Component {
   constructor(props) {
@@ -29,30 +34,23 @@ class PhaseListContainer extends Component {
   }
 
   handleSelectTab(tabIndex) {
-    let currentState = this.state
+    const currentState = this.state
     currentState.selectedTabIndex = tabIndex
     this.setState(currentState)
   }
 
-  model = {
-    project: {type: String},
-    goalTitle: {title: 'Goal', type: String},
-    hasArtifact: {title: 'Artifact?', type: String},
-    memberHandles: {title: 'Members', type: String},
-  }
-
   render() {
-    const {isBusy, currentUser, phases, projects, tabs} = this.props
+    const {isBusy, projects, tabs} = this.props
     const selectedTabIndex = this.state.selectedTabIndex
     const source = isBusy ? null : projects[selectedTabIndex]
     return isBusy ? null : (
       <TabbedContentTable
-        title= 'Phases'
-        model= {this.model}
-        tabs= {tabs}
+        title="Phases"
+        model={ProjectModel}
+        tabs={tabs}
         selectedTabIndex={selectedTabIndex}
         source={source}
-        handleSelectTab={this.handleSelectTab}
+        onSelectTab={this.handleSelectTab}
         onClickImport={this.handleClickImport}
         />
     )
@@ -60,8 +58,9 @@ class PhaseListContainer extends Component {
 }
 
 PhaseListContainer.propTypes = {
+  tabs: PropTypes.array.isRequired,
   users: PropTypes.object.isRequired,
-  phases: PropTypes.array.isRequired,
+  projects: PropTypes.array.isRequired,
   isBusy: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   currentUser: PropTypes.object.isRequired,
@@ -83,14 +82,21 @@ function mapStateToProps(state) {
   const {users: usersById} = users
   const {phases: phasesById} = phases
   const phaseList = Object.values(phasesById)
-  phaseList.sort( (a,b) => a.number - b.number )
-  const tabs = phaseList.map( phase => 'Phase ' + phase.number)
+  phaseList.sort((a, b) => a.number - b.number)
+  const tabNames = phaseList.map(phase => 'Phase ' + phase.number)
 
-  const projects = phaseList.map( phase => {
-    return phase.currentProjects.map( project => {
-      const members = project.memberIds.map( id => usersById[id].name)
+  const projectsByPhase = phaseList.map(phase => {
+    return phase.currentProjects.map(project => {
+      const members = project.memberIds.map(id => usersById[id].name)
+      const projectLink =
+        (
+          <Link key={project.id} to={`/projects/${project.name}`}>
+            {project.name}
+          </Link>
+        )
+
       return {
-        project: project.name,
+        project: projectLink,
         goalTitle: project.goal.title,
         hasArtifact: project.artifactURL,
         memberHandles: members
@@ -103,8 +109,8 @@ function mapStateToProps(state) {
     users: usersById,
     currentUser: auth.currentUser,
     phases: phaseList,
-    projects: projects,
-    tabs: tabs
+    projects: projectsByPhase,
+    tabs: tabNames
   }
 }
 
