@@ -12,7 +12,6 @@ import styles from './index.scss'
 
 export default class TabbedContentTable extends Component {
   render() {
-    // console.log('component props',this.props)
     const {
       model,
       source,
@@ -55,7 +54,7 @@ export default class TabbedContentTable extends Component {
     return (
       <Flex column>
         <Helmet>
-          <title>Phases</title>
+          <title>{title}</title>
         </Helmet>
         {header}
         {tabContent}
@@ -70,27 +69,6 @@ TabbedContentTable.propTypes = {
   source: PropTypes.array.isRequired,
   tabs: PropTypes.array.isRequired,
   selectedTabIndex: PropTypes.number.isRequired,
-
-
-  // phases: PropTypes.arrayOf(PropTypes.shape({
-  //   currentProjects: PropTypes.arrayOf(PropTypes.shape({
-  //     name: PropTypes.string.isRequired,
-  //     goal: PropTypes.shape({
-  //       title: PropTypes.string,
-  //     }),
-  //     : PropTypes.shape({
-  //       state: PropTypes.string,
-  //       cycleNumber: PropTypes.number,
-  //     }),
-  //     phase: PropTypes.shape({
-  //       number: PropTypes.number,
-  //     }),
-  //     members: PropTypes.arrayOf(PropTypes.shape({
-  //       handle: PropTypes.string,
-  //     })),
-  //     createdAt: PropTypes.date,
-  //   })),
-  // })),
   allowSelect: PropTypes.bool,
   allowImport: PropTypes.bool,
   onSelectRow: PropTypes.func,

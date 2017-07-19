@@ -35,7 +35,7 @@ class PhaseListContainer extends Component {
   }
 
   model = {
-    name: {type: String},
+    project: {type: String},
     goalTitle: {title: 'Goal', type: String},
     hasArtifact: {title: 'Artifact?', type: String},
     memberHandles: {title: 'Members', type: String},
@@ -60,7 +60,7 @@ class PhaseListContainer extends Component {
 }
 
 PhaseListContainer.propTypes = {
-  users: PropTypes.array.isRequired,
+  users: PropTypes.object.isRequired,
   phases: PropTypes.array.isRequired,
   isBusy: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
@@ -79,29 +79,28 @@ function fetchData(dispatch) {
 }
 
 function mapStateToProps(state) {
-  console.log('container state',state)
   const {app, auth, users, phases} = state
   const {users: usersById} = users
   const {phases: phasesById} = phases
   const phaseList = Object.values(phasesById)
   phaseList.sort( (a,b) => a.number - b.number )
-  // console.log('phaseList',phaseList)
   const tabs = phaseList.map( phase => 'Phase ' + phase.number)
 
   const projects = phaseList.map( phase => {
     return phase.currentProjects.map( project => {
+      const members = project.memberIds.map( id => usersById[id].name)
       return {
-        name: project.name,
+        project: project.name,
         goalTitle: project.goal.title,
         hasArtifact: project.artifactURL,
-        memberHandles: project.memberIds
+        memberHandles: members
       }
     })
   })
-  // console.log('projects',projects)
   return {
     isBusy: phases.isBusy || users.isBusy,
     loading: app.showLoading,
+    users: usersById,
     currentUser: auth.currentUser,
     phases: phaseList,
     projects: projects,

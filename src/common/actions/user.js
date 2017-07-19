@@ -6,7 +6,6 @@ import schemas from './schemas'
 import queries from './queries'
 
 export function findUsers(identifiers) {
-  console.log('find users run ===>')
   return {
     types: [
       types.FIND_USERS_REQUEST,
@@ -19,10 +18,6 @@ export function findUsers(identifiers) {
       return getGraphQLFetcher(dispatch, getState().auth)(query)
         .then(graphQLResponse => graphQLResponse.data.findUsers)
         .then(users => normalize(users, schemas.users))
-        .then(result => {
-          console.log('find users fetch result',result)
-          return result
-        })
     },
     payload: {},
   }
