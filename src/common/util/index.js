@@ -216,11 +216,14 @@ export const sortByAttrs = sortByAttr
 
 export function attrCompareFn(attr) {
   return (a, b) => {
-    if (a[attr] < b[attr]) {
+    const aAttribute = typeof a[attr] === 'string' ? a[attr].toUpperCase() : a[attr]
+    const bAttribute = typeof b[attr] === 'string' ? b[attr].toUpperCase() : b[attr]
+
+    if (aAttribute < bAttribute) {
       return -1
     }
 
-    if (a[attr] > b[attr]) {
+    if (aAttribute > bAttribute) {
       return 1
     }
 

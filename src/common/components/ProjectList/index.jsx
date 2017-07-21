@@ -3,7 +3,7 @@ import {Button} from 'react-toolbox/lib/button'
 import Helmet from 'react-helmet'
 
 import ContentHeader from 'src/common/components/ContentHeader'
-import SortedContentTable from 'src/common/components/SortedContentTable'
+import ContentTable from 'src/common/components/ContentTable'
 import {Flex} from 'src/common/components/Layout'
 
 export default class ProjectList extends Component {
