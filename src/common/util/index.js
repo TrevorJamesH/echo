@@ -261,9 +261,9 @@ export function flatten(potentialArray) {
   return potentialArray.reduce((result, next) => result.concat(flatten(next)), [])
 }
 
-export function deepClone(object){
+export function deepClone(object) {
   if (Array.isArray(object)) {
-    return object.map( x => {
+    return object.map(x => {
       if (typeof x === 'object') {
         return deepClone(x)
       }

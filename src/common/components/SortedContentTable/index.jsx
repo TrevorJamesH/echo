@@ -1,29 +1,27 @@
 import React, {Component, PropTypes} from 'react'
-import Table from 'react-toolbox/lib/table'
 import Button from 'react-toolbox/lib/button'
+import ContentTable from 'src/common/components/ContentTable'
+import {deepClone, sortByAttr} from 'src/common/util'
 
 import theme from './theme.scss'
 import themeSelect from './themeSelect.scss'
-import ContentTable from 'src/common/components/ContentTable'
-import {deepClone} from 'src/common/util'
-import {sortByAttr} from 'src/common/util'
 
 export default class SortedContentTable extends Component {
-  constructor(){
+  constructor() {
     super()
     this.state = {sortBy: 'name'}
     this.handleSort = this.handleSort.bind(this)
   }
 
-  handleSort( sortBy ){
-    this.setState({sortBy:sortBy})
+  handleSort(sortBy) {
+    this.setState({sortBy})
   }
 
-  addButtonsToModel( model ){
-    const newModel = deepClone( model )
+  addButtonsToModel(model) {
+    const newModel = deepClone(model)
     Object.keys(newModel).forEach(entry => {
       const title = newModel[entry].title || entry
-      newModel[entry].title = (<Button label={title} onMouseUp={() => this.handleSort(entry)}></Button>)
+      newModel[entry].title = (<Button label={title} onClick={() => this.handleSort(entry)}/>)
     })
     return newModel
   }
@@ -37,7 +35,7 @@ export default class SortedContentTable extends Component {
       <ContentTable
         {...this.props}
         source={sortedSource}
-        model={this.addButtonsToModel( model )}
+        model={this.addButtonsToModel(model)}
         theme={allowSelect ? themeSelect : theme}
         onRowClick={allowSelect ? onSelectRow : null}
         selectable={false}
@@ -48,6 +46,8 @@ export default class SortedContentTable extends Component {
 }
 
 SortedContentTable.propTypes = {
+  model: PropTypes.object.isRequired,
+  source: PropTypes.object.isRequired,
   allowSelect: PropTypes.bool,
   onSelectRow: PropTypes.func,
 }
