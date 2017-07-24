@@ -10,7 +10,7 @@ export default class ContentTable extends Component {
   constructor() {
     super()
     this.state = {
-      sortBy: 'name',
+      sortBy: null,
       direction: 1
     }
     this.handleClickSort = this.handleClickSort.bind(this)
@@ -21,6 +21,7 @@ export default class ContentTable extends Component {
     if (currentState.sortBy === event.target.name) {
       currentState.direction *= -1
     } else {
+      currentState.direction = 1
       currentState.sortBy = event.target.name
     }
     this.setState(currentState)
@@ -31,16 +32,17 @@ export default class ContentTable extends Component {
     Object.keys(newModel).forEach(fieldName => {
       const title = newModel[fieldName].title || fieldName
       const arrow = this.state.direction === 1 ? ' ▼' : ' ▲'
-      const arrowTitle = this.state.sortBy === fieldName ? title + arrow : title
-      newModel[fieldName].title = (<Button label={arrowTitle} name={fieldName} onClick={this.handleClickSort}/>)
+      const buttonTitle = this.state.sortBy === fieldName ? title + arrow : title
+      newModel[fieldName].title = (<Button label={buttonTitle} name={fieldName} onClick={this.handleClickSort} flat/>)
     })
     return newModel
   }
 
   render() {
     const {allowSelect, onSelectRow, model, source} = this.props
-    const sortBy = this.state.sortBy
-    const sortedSource = this.state.direction === 1 ? sortByAttr(source, sortBy) : sortByAttr(source, sortBy).reverse()
+    const {sortBy, direction} = this.state
+    const secondarySortAttribute = Object.keys(model)[0]
+    const sortedSource = direction === 1 ? sortByAttr(source, sortBy, secondarySortAttribute) : sortByAttr(source, sortBy).reverse()
 
     const buttonModel = this.addButtonsToModel(model)
 
