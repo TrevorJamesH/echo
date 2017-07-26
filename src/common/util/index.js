@@ -212,6 +212,13 @@ export function sortByAttr(list, ...attrs) {
   }, 0))
 }
 
+export function sortByCompareFunctions(list, ...fns) {
+  return list.sort((a, b) => fns.reduce((result, next) => {
+    const compare = next
+    return result !== 0 ? result : compare(a, b)
+  }, 0))
+}
+
 export const sortByAttrs = sortByAttr
 
 export function attrCompareFn(attr) {

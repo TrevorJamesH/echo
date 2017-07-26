@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import Table from 'react-toolbox/lib/table'
 import Button from 'react-toolbox/lib/button'
 
-import {deepClone, attrCompareFn} from 'src/common/util'
+import {deepClone, attrCompareFn, sortByCompareFunctions} from 'src/common/util'
 import theme from './theme.scss'
 import themeSelect from './themeSelect.scss'
 
@@ -27,13 +27,6 @@ export default class ContentTable extends Component {
     this.setState(currentState)
   }
 
-  sortByCompareFunctions(list, ...attrs) {
-    return list.sort((a, b) => attrs.reduce((result, next) => {
-      const compare = this.props.model[next].compareFn || attrCompareFn(next)
-      return result !== 0 ? result : compare(a, b)
-    }, 0))
-  }
-
   addButtonsToModel(model) {
     const newModel = deepClone(model)
     Object.keys(newModel).forEach(fieldName => {
@@ -47,9 +40,13 @@ export default class ContentTable extends Component {
 
   render() {
     const {allowSelect, onSelectRow, model, source} = this.props
+    console.log('source',source)
     const {sortBy, direction} = this.state
-    const secondarySortAttribute = Object.keys(model)[0]
-    const sortedSource = this.sortByCompareFunctions(source, sortBy || secondarySortAttribute, secondarySortAttribute)
+    const secondarySortBy = Object.keys(model)[0]
+    const sortByAtty = sortBy ? sortBy : secondarySortBy
+    const sortFunction = model[sortByAtty].compareFn ? model[sortByAtty].compareFn : attrCompareFn(sortByAtty)
+    const secondSortFunction = model[secondarySortBy].compareFn ? model[secondarySortBy].compareFn : attrCompareFn(secondarySortBy)
+    const sortedSource = sortByCompareFunctions(source, sortFunction, secondSortFunction)
     if (direction === -1) {
       sortedSource.reverse()
     }
