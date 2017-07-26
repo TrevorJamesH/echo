@@ -231,6 +231,43 @@ export function attrCompareFn(attr) {
   }
 }
 
+export function deepAttrCompareFn(attr) {
+  return (a, b) => {
+    let aAttribute = deepObjectPath(a, attr)
+    let bAttribute = deepObjectPath(b, attr)
+    if (typeof aAttribute === 'string') {
+      aAttribute = aAttribute.toUpperCase()
+    }
+    if (typeof bAttribute === 'string') {
+      bAttribute = bAttribute.toUpperCase()
+    }
+
+    if (aAttribute < bAttribute) {
+      return -1
+    }
+
+    if (aAttribute > bAttribute) {
+      return 1
+    }
+
+    return 0
+  }
+}
+
+export function deepObjectPath(obj, path) {
+  function recurse(o, props) {
+    if (props.length === 0) {
+      return o
+    }
+    if (!o) {
+      return undefined
+    }
+    return recurse(o[props.shift()], props)
+  }
+
+  return recurse(obj, path.split('.'))
+}
+
 export function shuffle(array) {
   const result = toArray(array)
 

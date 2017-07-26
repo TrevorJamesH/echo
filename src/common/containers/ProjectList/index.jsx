@@ -9,18 +9,18 @@ import {showLoad, hideLoad} from 'src/common/actions/app'
 import {findProjectsForCycle} from 'src/common/actions/project'
 import {findUsers} from 'src/common/actions/user'
 import {findPhases} from 'src/common/actions/phase'
-import {userCan} from 'src/common/util'
+import {userCan, deepAttrCompareFn} from 'src/common/util'
 
 import styles from './index.scss'
 
 const ProjectModel = {
-  name: {type: String},
+  name: {type: String, compareFn: deepAttrCompareFn('name.props.children')},
   cycleNumber: {title: 'Cycle', type: String},
   phaseNumber: {title: 'Phase', type: String},
   state: {title: 'State', type: String},
-  goalTitle: {title: 'Goal', type: String},
+  goalTitle: {title: 'Goal', type: String, compareFn: deepAttrCompareFn('goalTitle.props.children')},
   hasArtifact: {title: 'Artifact?', type: String},
-  memberHandles: {title: 'Members', type: String},
+  memberHandles: {title: 'Members', type: String, compareFn: deepAttrCompareFn('memberHandles.props.children.props.children')},
 }
 
 class ProjectListContainer extends Component {
